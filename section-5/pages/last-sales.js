@@ -1,30 +1,46 @@
 import { useEffect, useState } from 'react';
 import { firebaseURL } from '../hidden/hidden';
+import useSWR from 'swr';
 
-const LastSalesPage = () => {
-  const [sales, setSales] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+const LastSalesPage = (props) => {
+  const [sales, setSales] = useState(props.sales);
+  // const [isLoading, setIsLoading] = useState(false);
+  const fetcher = (url) => fetch(url).then((r) => r.json());
+
+  const { data, error } = useSWR(`${firebaseURL}/sales.json`, fetcher);
 
   useEffect(() => {
-    setIsLoading(true);
-    fetch(`${firebaseURL}/sales.json`)
-      .then((response) => response.json())
-      .then((data) => {
-        const transformedSales = [];
-        for (const key in data) {
-          transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume });
-        }
-        setSales(transformedSales);
-        setIsLoading(false);
-      });
-  }, []);
+    if (data) {
+      const transformedSales = [];
 
-  if (isLoading) {
-    return <p>Loading...</p>;
+      for (const key in data) {
+        transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume });
+      }
+
+      setSales(transformedSales);
+    }
+  }, [data]);
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   fetch(`${firebaseURL}/sales.json`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const transformedSales = [];
+  //       for (const key in data) {
+  //         transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume });
+  //       }
+  //       setSales(transformedSales);
+  //       setIsLoading(false);
+  //     });
+  // }, []);
+
+  if (error) {
+    return <p>Failed to load.</p>;
   }
 
-  if (!sales) {
-    return <p>No data yet.</p>;
+  if (!data && !sales) {
+    return <p>Loading...</p>;
   }
 
   return (
@@ -37,5 +53,18 @@ const LastSalesPage = () => {
     </ul>
   );
 };
+
+export async function getStaticProps() {
+  return fetch(`${firebaseURL}/sales.json`)
+    .then((response) => response.json())
+    .then((data) => {
+      const transformedSales = [];
+      for (const key in data) {
+        transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume });
+      }
+
+      return { props: { sales: transformedSales }, revalidate: 10 };
+    });
+}
 
 export default LastSalesPage;
