@@ -1,1 +1,4 @@
-[{"id":"2022-01-03T17:08:57.343Z","email":"test@test.com","text":"does this work?"},{"id":"2022-01-03T17:35:58.738Z","email":"test@test.com","text":"another message"}]
+[
+  { "id": "2022-01-03T17:08:57.343Z", "email": "test@test.com", "text": "does this work?" },
+  { "id": "2022-01-03T17:35:58.738Z", "email": "testing@test.com", "text": "another message" }
+]
