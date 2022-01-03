@@ -10,7 +10,17 @@ function HomePage() {
     const enteredEmail = emailInputRef.current.value;
     const enteredFeedback = feedbackInputRef.current.value;
 
-    fetch();
+    const reqBody = { email: enteredEmail, text: enteredFeedback };
+
+    fetch('/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify(reqBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
   }
 
   return (
@@ -22,10 +32,8 @@ function HomePage() {
           <input type="email" id="email" ref={emailInputRef}></input>
         </div>
         <div>
-          <label htmlFor="feedback" ref={feedbackInputRef}>
-            Your Feedback
-          </label>
-          <textarea id="feedback"></textarea>
+          <label htmlFor="feedback">Your Feedback</label>
+          <textarea id="feedback" ref={feedbackInputRef}></textarea>
         </div>
         <button>Send Feedback</button>
       </form>
