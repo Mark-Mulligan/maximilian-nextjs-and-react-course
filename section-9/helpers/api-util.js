@@ -1,36 +1,33 @@
-import { getAllEvents } from '../dummy-data';
+export async function getAllEvents() {
+  const response = await fetch('http://localhost:3001/api/events');
+  const data = await response.json();
 
-// export async function getAllEvents() {
-//   const response = fs.readFileSync('../dummy-data.js')
-//   const response = await fetch(`${firebaseURL}/events.json`);
-//   const data = await response.json();
+  const events = [];
 
-//   const events = [];
+  for (const key in data) {
+    events.push({
+      id: key,
+      ...data[key],
+    });
+  }
 
-//   for (const key in data) {
-//     events.push({
-//       id: key,
-//       ...data[key],
-//     });
-//   }
+  return events;
+}
 
-//   return events;
-// }
-
-export function getFeaturedEvents() {
-  const allEvents = getAllEvents();
+export async function getFeaturedEvents() {
+  const allEvents = await getAllEvents();
   return allEvents.filter((event) => event.isFeatured);
 }
 
-export function getEventById(id) {
-  const allEvents = getAllEvents();
+export async function getEventById(id) {
+  const allEvents = await getAllEvents();
   return allEvents.find((event) => event.id === id);
 }
 
-export function getFilteredEvents(dateFilter) {
+export async function getFilteredEvents(dateFilter) {
   const { year, month } = dateFilter;
 
-  const allEvents = getAllEvents();
+  const allEvents = await getAllEvents();
 
   let filteredEvents = allEvents.filter((event) => {
     const eventDate = new Date(event.date);
