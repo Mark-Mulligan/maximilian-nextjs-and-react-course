@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import classes from './new-comment.module.css';
 
+// new and imporved version
 function NewComment(props) {
   const [isInvalid, setIsInvalid] = useState(false);
   const [emailInput, setEmailInput] = useState('');
