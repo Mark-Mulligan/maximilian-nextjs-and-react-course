@@ -30,7 +30,7 @@ function Comments(props) {
     setShowComments((prevStatus) => !prevStatus);
   }
 
-  function addCommentHandler(commentData) {
+  function addCommentHandler(commentData, cb) {
     notificationCtx.showNotification({
       title: 'Sending comment...',
       message: 'Your comment is currently being stored into a database.',
@@ -59,6 +59,9 @@ function Comments(props) {
           message: 'Your comment was saved!',
           status: 'success',
         });
+
+        setComments([...comments, commentData]);
+        cb();
       })
       .catch((error) => {
         notificationCtx.showNotification({
@@ -71,9 +74,7 @@ function Comments(props) {
 
   return (
     <section className={classes.comments}>
-      <button onClick={toggleCommentsHandler}>
-        {showComments ? 'Hide' : 'Show'} Comments
-      </button>
+      <button onClick={toggleCommentsHandler}>{showComments ? 'Hide' : 'Show'} Comments</button>
       {showComments && <NewComment onAddComment={addCommentHandler} />}
       {showComments && !isFetchingComments && <CommentList items={comments} />}
       {showComments && isFetchingComments && <p>Loading...</p>}
